@@ -7,6 +7,8 @@ import { StatCheckbox } from './components/StatCheckbox/StatCheckbox';
 import { TableRow } from './components/TableRow/TableRow';
 import { useTriggerFetch } from './hooks/useTriggerFetch';
 
+type TValue = "toi" | "gp" | "xg60" | "c60" | "sogcPct" | "player" | "team"
+
 function App() {
   const [xg60, setXg60] = React.useState(true)
   const [c60, setC60] = React.useState(false)
@@ -61,101 +63,44 @@ function App() {
     triggerFetch()
   }
 
-  const handleSort = (by: string) => {
-    if (by === "sogcPct") {
-      if (sortOrderASC) {
-        data.sort((a, b) => {
-          return a.stats.sogc_pct! - b.stats.sogc_pct!
-        })
-        setSortOrderASC(false)
-      } else {
-        data.sort((a, b) => {
-          return b.stats.sogc_pct! - a.stats.sogc_pct!
-        })
-        setSortOrderASC(true)
-      }
-    }
-    if (by === "c60") {
-      if (sortOrderASC) {
-        data.sort((a, b) => {
-          return a.stats.c60! - b.stats.c60!
-        })
-        setSortOrderASC(false)
-      } else {
-        data.sort((a, b) => {
-          return b.stats.c60! - a.stats.c60!
-        })
-        setSortOrderASC(true)
-      }
-    }
-    if (by === "xg60") {
-      if (sortOrderASC) {
-        data.sort((a, b) => {
-          return a.stats.xg60! - b.stats.xg60!
-        })
-        setSortOrderASC(false)
-      } else {
-        data.sort((a, b) => {
-          return b.stats.xg60! - a.stats.xg60!
-        })
-        setSortOrderASC(true)
-      }
-    }
-    if (by === "gp") {
-      if (sortOrderASC) {
-        data.sort((a, b) => {
-          return a.stats.gp! - b.stats.gp!
-        })
-        setSortOrderASC(false)
-      } else {
-        data.sort((a, b) => {
-          return b.stats.gp! - a.stats.gp!
-        })
-        setSortOrderASC(true)
-      }
-    }
-    if (by === "toi") {
-      if (sortOrderASC) {
-        data.sort((a, b) => {
-          return a.stats.toi! - b.stats.toi!
-        })
-        setSortOrderASC(false)
-      } else {
-        data.sort((a, b) => {
-          return b.stats.toi! - a.stats.toi!
-        })
-        setSortOrderASC(true)
-      }
-    }
-    if (by === "player") {
-      if (sortOrderASC) {
-        data.sort((a, b) => {
+  const handleSort = (by: TValue) => {
+    if (sortOrderASC) {
+      data.sort((a, b) => {
+        if (by === "sogcPct") return a.stats.sogc_pct! - b.stats.sogc_pct!
+        if (by === "c60") return a.stats.c60! - b.stats.c60!
+        if (by === "xg60") return a.stats.xg60! - b.stats.xg60!
+        if (by === "toi") return a.stats.toi! - b.stats.toi!
+        if (by === "gp") return a.stats.gp! - b.stats.gp!
+        if (by === "player") {
           if (a.player > b.player) return 1
           return -1
-        })
-        setSortOrderASC(false)
-      } else {
-        data.sort((a, b) => {
-          if (a.player < b.player) return 1
-          return -1
-        })
-        setSortOrderASC(true)
-      }
-    }
-    if (by === "team") {
-      if (sortOrderASC) {
-        data.sort((a, b) => {
+        }
+        if (by === "team") {
           if (a.team > b.team) return 1
           return -1
-        })
-        setSortOrderASC(false)
-      } else {
-        data.sort((a, b) => {
+        }
+        return -1
+      })
+      setSortOrderASC(false)
+    }
+    if (!sortOrderASC) {
+      data.sort((a, b) => {
+        if (by === "sogcPct") return b.stats.sogc_pct! - a.stats.sogc_pct!
+        if (by === "c60") return b.stats.c60! - a.stats.c60!
+        if (by === "xg60") return b.stats.xg60! - a.stats.xg60!
+        if (by === "toi") return b.stats.toi! - a.stats.toi!
+        if (by === "gp") return b.stats.gp! - a.stats.gp!
+        if (by === "player") {
+          if (a.player < b.player) return 1
+          return -1
+        }
+        if (by === "team") {
           if (a.team < b.team) return 1
           return -1
-        })
-        setSortOrderASC(true)
-      }
+        }
+        return -1
+      })
+      setSortOrderASC(true)
     }
   }
 
