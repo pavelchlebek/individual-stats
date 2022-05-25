@@ -10,13 +10,28 @@ main {
 }
 
 table {
-  background-color: aquamarine;
   width: 100%;
+  border-collapse: collapse;
 }
 
-/* .team {
-  padding: 0 40px;
-} */
+th {
+  border-bottom: 1px solid #000;
+  background-color: #ccc;
+  cursor: pointer;
+}
+
+td {
+  text-align: center;
+  border-bottom: 1px solid #000;
+}
+
+.team {
+  width: 330px;
+}
+
+.player {
+  width: 330px;
+}
 
 .statsOptions {
   display: flex;
@@ -33,4 +48,25 @@ button {
   padding: 4px 26px;
   margin-left: 36px;
   background-color: #fff;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.alert {
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 500;
+  color: rgb(235, 14, 14);
+  border-radius: 4px;
+  padding: 8px 6px;
+  margin-bottom: 14px;
+}
+
+.modalButton {
+  margin: 0;
 }

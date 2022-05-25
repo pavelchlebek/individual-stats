@@ -2,7 +2,7 @@ import React from 'react';
 
 import classes from './StatCheckbox.module.css';
 
-export interface ICheckboxProps {
+interface ICheckboxProps {
   checked: boolean
   onChange: () => void
   label: string
@@ -10,9 +10,15 @@ export interface ICheckboxProps {
 
 export const StatCheckbox: React.FC<ICheckboxProps> = ({ checked, onChange, label }) => {
   return (
-    <div onClick={onChange} className={classes.checkItem}>
-      <input className={classes.checkbox} type="checkbox" checked={checked} onChange={onChange} />
-      <label className={classes.label} htmlFor="scales">
+    <div className={classes.checkItem}>
+      <input
+        className={classes.checkbox}
+        type="checkbox"
+        id={label}
+        checked={checked}
+        onChange={onChange}
+      />
+      <label className={classes.label} htmlFor={label}>
         {label}
       </label>
     </div>

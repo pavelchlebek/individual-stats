@@ -1,18 +1,36 @@
 import React from 'react';
 
 import classes from './App.module.css';
-import {
-  ICheckboxProps,
-  StatCheckbox,
-} from './components/StatCheckbox/StatCheckbox';
-import { useTriggerFetch } from './utils/UseTriggerFetch';
+import { Modal } from './components/Modal/Modal';
+import { Spinner } from './components/Spinner/Spinner';
+import { StatCheckbox } from './components/StatCheckbox/StatCheckbox';
+import { TableRow } from './components/TableRow/TableRow';
+import { useTriggerFetch } from './hooks/useTriggerFetch';
 
 function App() {
-  const [xg60, setXg60] = React.useState(false)
+  const [xg60, setXg60] = React.useState(true)
   const [c60, setC60] = React.useState(false)
   const [sogcPct, setSogcPct] = React.useState(false)
 
-  const checkboxes: ICheckboxProps[] = [
+  const [showXg60, setShowXg60] = React.useState(true)
+  const [showC60, setShowC60] = React.useState(false)
+  const [showSogcPct, setShowSogcPct] = React.useState(false)
+
+  const [showModal, setShowModal] = React.useState(false)
+
+  const [metrics, setMetrics] = React.useState<string[]>([])
+
+  const [sortOrderASC, setSortOrderASC] = React.useState(true)
+
+  React.useEffect(() => {
+    const usedMetrics = []
+    if (xg60) usedMetrics.push("xg60")
+    if (c60) usedMetrics.push("c60")
+    if (sogcPct) usedMetrics.push("sogc_pct")
+    setMetrics(usedMetrics)
+  }, [xg60, c60, sogcPct])
+
+  const checkboxes: React.ComponentProps<typeof StatCheckbox>[] = [
     {
       checked: xg60,
       onChange: () => setXg60((prev) => !prev),
@@ -30,22 +48,127 @@ function App() {
     },
   ]
 
-  // console.log("xg60: ", xg60)
-
-  const handleFetch = () => {
-    console.log("Fetching data from API")
-  }
-
-  const { data, error, loading, triggerFetch } = useTriggerFetch()
+  const { data, error, loading, triggerFetch } = useTriggerFetch(metrics)
 
   const loadData = () => {
+    if (metrics.length < 1) {
+      setShowModal(true)
+      return
+    }
+    setShowXg60(xg60)
+    setShowC60(c60)
+    setShowSogcPct(sogcPct)
     triggerFetch()
   }
 
-  console.log("data: ", data)
+  const handleSort = (by: string) => {
+    if (by === "sogcPct") {
+      if (sortOrderASC) {
+        data.sort((a, b) => {
+          return a.stats.sogc_pct! - b.stats.sogc_pct!
+        })
+        setSortOrderASC(false)
+      } else {
+        data.sort((a, b) => {
+          return b.stats.sogc_pct! - a.stats.sogc_pct!
+        })
+        setSortOrderASC(true)
+      }
+    }
+    if (by === "c60") {
+      if (sortOrderASC) {
+        data.sort((a, b) => {
+          return a.stats.c60! - b.stats.c60!
+        })
+        setSortOrderASC(false)
+      } else {
+        data.sort((a, b) => {
+          return b.stats.c60! - a.stats.c60!
+        })
+        setSortOrderASC(true)
+      }
+    }
+    if (by === "xg60") {
+      if (sortOrderASC) {
+        data.sort((a, b) => {
+          return a.stats.xg60! - b.stats.xg60!
+        })
+        setSortOrderASC(false)
+      } else {
+        data.sort((a, b) => {
+          return b.stats.xg60! - a.stats.xg60!
+        })
+        setSortOrderASC(true)
+      }
+    }
+    if (by === "gp") {
+      if (sortOrderASC) {
+        data.sort((a, b) => {
+          return a.stats.gp! - b.stats.gp!
+        })
+        setSortOrderASC(false)
+      } else {
+        data.sort((a, b) => {
+          return b.stats.gp! - a.stats.gp!
+        })
+        setSortOrderASC(true)
+      }
+    }
+    if (by === "toi") {
+      if (sortOrderASC) {
+        data.sort((a, b) => {
+          return a.stats.toi! - b.stats.toi!
+        })
+        setSortOrderASC(false)
+      } else {
+        data.sort((a, b) => {
+          return b.stats.toi! - a.stats.toi!
+        })
+        setSortOrderASC(true)
+      }
+    }
+    if (by === "player") {
+      if (sortOrderASC) {
+        data.sort((a, b) => {
+          if (a.player > b.player) return 1
+          return -1
+        })
+        setSortOrderASC(false)
+      } else {
+        data.sort((a, b) => {
+          if (a.player < b.player) return 1
+          return -1
+        })
+        setSortOrderASC(true)
+      }
+    }
+    if (by === "team") {
+      if (sortOrderASC) {
+        data.sort((a, b) => {
+          if (a.team > b.team) return 1
+          return -1
+        })
+        setSortOrderASC(false)
+      } else {
+        data.sort((a, b) => {
+          if (a.team < b.team) return 1
+          return -1
+        })
+        setSortOrderASC(true)
+      }
+    }
+  }
 
   return (
     <main>
+      <Modal show={showModal} onModalClose={() => setShowModal(false)}>
+        <div className={classes.modalContent}>
+          <div className={classes.alert}>Please choose at least one metric!</div>
+          <button className={classes.modalButton} onClick={() => setShowModal(false)}>
+            OK
+          </button>
+        </div>
+      </Modal>
       <section className={classes.controls}>
         <button onClick={loadData}>Load Data</button>
         <div className={classes.statsOptions}>
@@ -64,16 +187,39 @@ function App() {
       <table>
         <thead>
           <tr>
-            <th className={classes.team}>Team</th>
-            <th>Player</th>
-            <th>toi</th>
-            <th>gp</th>
-            <th>xg60</th>
-            <th>c60</th>
-            <th>sogc_pct</th>
+            <th onClick={() => handleSort("team")} className={classes.team}>
+              Team
+            </th>
+            <th onClick={() => handleSort("player")} className={classes.player}>
+              Player
+            </th>
+            <th onClick={() => handleSort("toi")}>toi</th>
+            <th onClick={() => handleSort("gp")}>gp</th>
+            {showXg60 && data && <th onClick={() => handleSort("xg60")}>xg60</th>}
+            {showC60 && data && <th onClick={() => handleSort("c60")}>c60</th>}
+            {showSogcPct && data && <th onClick={() => handleSort("sogcPct")}>sogc_pct</th>}
           </tr>
         </thead>
+        <tbody>
+          {data &&
+            data.map((player) => {
+              return (
+                <TableRow
+                  key={player.player}
+                  player={player.player}
+                  team={player.team}
+                  stats={player.stats}
+                />
+              )
+            })}
+        </tbody>
       </table>
+      {loading && <Spinner />}
+      {error && (
+        <div style={{ display: "flex", justifyContent: "center" }} className={classes.alert}>
+          {`Request error: ${error.message} ${error.code}`}
+        </div>
+      )}
     </main>
   )
 }
