@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Solution to HL_test_task
 
-Solution to HL_test_task
+solved by using `create-react-app --typescript` and `axios` for data fetching
 
 ## Instructions
 
