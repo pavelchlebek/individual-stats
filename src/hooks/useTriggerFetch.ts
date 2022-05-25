@@ -2,6 +2,7 @@ import React from 'react';
 
 import axios from 'axios';
 
+import { TStatValue } from '../App';
 import { TableRow } from '../components/TableRow/TableRow';
 
 const API_URL = "http://logiq.statistics.datasport.cz/api/v1/individual"
@@ -12,7 +13,7 @@ const headers = {
   Authorization: "Bearer 4f92fbc1d3016712034caee5a25e07ec0fbbefb1",
 }
 
-type TMetrics = string[]
+type TMetrics = TStatValue[]
 
 interface IResponse {
   team: string

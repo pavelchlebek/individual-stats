@@ -38,12 +38,12 @@ function App() {
 
   const [showModal, setShowModal] = React.useState(false)
 
-  const [metrics, setMetrics] = React.useState<string[]>([])
+  const [metrics, setMetrics] = React.useState<TStatValue[]>([])
 
   const [sortOrderASC, setSortOrderASC] = React.useState(true)
 
   React.useEffect(() => {
-    const usedMetrics = []
+    const usedMetrics: TStatValue[] = []
     if (xg60) usedMetrics.push("xg60")
     if (c60) usedMetrics.push("c60")
     if (sogcPct) usedMetrics.push("sogc_pct")
