@@ -4,10 +4,28 @@ import classes from './App.module.css';
 import { Modal } from './components/Modal/Modal';
 import { Spinner } from './components/Spinner/Spinner';
 import { StatCheckbox } from './components/StatCheckbox/StatCheckbox';
+import { TableHeading } from './components/TableHeading/TableHeading';
 import { TableRow } from './components/TableRow/TableRow';
 import { useTriggerFetch } from './hooks/useTriggerFetch';
 
-type TValue = "toi" | "gp" | "xg60" | "c60" | "sogcPct" | "player" | "team"
+export type TStatValue = "toi" | "gp" | "xg60" | "c60" | "sogc_pct" | "player" | "team"
+
+const tableHeadings: Omit<React.ComponentProps<typeof TableHeading>, "handleSort">[] = [
+  {
+    className: classes.team,
+    label: "team",
+  },
+  {
+    className: classes.player,
+    label: "player",
+  },
+  {
+    label: "toi",
+  },
+  {
+    label: "gp",
+  },
+]
 
 function App() {
   const [xg60, setXg60] = React.useState(true)
@@ -63,10 +81,10 @@ function App() {
     triggerFetch()
   }
 
-  const handleSort = (by: TValue) => {
+  const handleSort = (by: TStatValue) => {
     if (sortOrderASC) {
       data.sort((a, b) => {
-        if (by === "sogcPct") return a.stats.sogc_pct! - b.stats.sogc_pct!
+        if (by === "sogc_pct") return a.stats.sogc_pct! - b.stats.sogc_pct!
         if (by === "c60") return a.stats.c60! - b.stats.c60!
         if (by === "xg60") return a.stats.xg60! - b.stats.xg60!
         if (by === "toi") return a.stats.toi! - b.stats.toi!
@@ -85,7 +103,7 @@ function App() {
     }
     if (!sortOrderASC) {
       data.sort((a, b) => {
-        if (by === "sogcPct") return b.stats.sogc_pct! - a.stats.sogc_pct!
+        if (by === "sogc_pct") return b.stats.sogc_pct! - a.stats.sogc_pct!
         if (by === "c60") return b.stats.c60! - a.stats.c60!
         if (by === "xg60") return b.stats.xg60! - a.stats.xg60!
         if (by === "toi") return b.stats.toi! - a.stats.toi!
@@ -132,17 +150,19 @@ function App() {
       <table>
         <thead>
           <tr>
-            <th onClick={() => handleSort("team")} className={classes.team}>
-              Team
-            </th>
-            <th onClick={() => handleSort("player")} className={classes.player}>
-              Player
-            </th>
-            <th onClick={() => handleSort("toi")}>toi</th>
-            <th onClick={() => handleSort("gp")}>gp</th>
-            {showXg60 && data && <th onClick={() => handleSort("xg60")}>xg60</th>}
-            {showC60 && data && <th onClick={() => handleSort("c60")}>c60</th>}
-            {showSogcPct && data && <th onClick={() => handleSort("sogcPct")}>sogc_pct</th>}
+            {tableHeadings.map((heading) => {
+              return (
+                <TableHeading
+                  key={heading.label}
+                  handleSort={handleSort}
+                  className={heading.className}
+                  label={heading.label}
+                />
+              )
+            })}
+            {showXg60 && data && <TableHeading handleSort={handleSort} label="xg60" />}
+            {showC60 && data && <TableHeading handleSort={handleSort} label="c60" />}
+            {showSogcPct && data && <TableHeading handleSort={handleSort} label="sogc_pct" />}
           </tr>
         </thead>
         <tbody>

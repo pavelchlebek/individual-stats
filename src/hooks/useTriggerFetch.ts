@@ -9,7 +9,7 @@ const COMPETITION_UUID = "2f70259b-5609-47c9-92d4-008f9ef940f1"
 
 const headers = {
   "Content-Type": "application/json",
-  Authorization: "Bearer 57856d7580b3beb6a0c5d768d405449992f4bc37",
+  Authorization: "Bearer 4f92fbc1d3016712034caee5a25e07ec0fbbefb1",
 }
 
 type TMetrics = string[]
